@@ -27,6 +27,7 @@ vol = 0
 color = (0,215,255)
 
 tipIds = [4, 8, 12, 16, 20]
+clickMode=True
 
 
 
@@ -34,10 +35,11 @@ pyautogui.FAILSAFE = False
 
 def HandTracker(cap,pTime,cTime,detector,active,mode):
       
+        global clickMode
         success, img = cap.read()
         img = detector.findHands(img)
         lmList = detector.findPosition(img, draw=False)
-    # print(lmList)
+        # print(lmList)
         fingers = []
 
         if len(lmList) != 0:
@@ -70,9 +72,12 @@ def HandTracker(cap,pTime,cTime,detector,active,mode):
             elif (fingers == [1, 1, 0, 0, 0] ) & (active == 0 ):
                 mode = 'Volume'
                 active = 1
-            elif (fingers == [1 ,1 , 0, 0, 1] ) & (active == 0 ):
+            elif (fingers == [1 ,1 , 0, 0, 1]) & (active == 0 ):
                 mode = 'Cursor'
                 active = 1
+            elif(fingers==[1,0,0,0,0]) & (active==0):
+                mode='click'
+                active=1
 
     ############# Scroll 👇👇👇👇##############
         if mode == 'Scroll':
@@ -148,34 +153,49 @@ def HandTracker(cap,pTime,cTime,detector,active,mode):
 
     #######################################################################
         if mode == 'Cursor':
-            active = 1
-            #print(mode)
-            # putText(mode)
-            cv2.rectangle(img, (110, 20), (620, 350), (255, 255, 255), 3)
+                active = 1
+                clickMode=True
+                #print(mode)
+                # putText(mode)
+                cv2.rectangle(img, (110, 20), (620, 350), (255, 255, 255), 3)
 
-            if fingers[1:] == [0,0,0,0]: #thumb excluded
-                active = 0
-                mode = 'N'
-                print(mode)
-            else:
                 if len(lmList) != 0:
-                    x1, y1 = lmList[8][1], lmList[8][2]
-                    w, h = autopy.screen.size()
-                    X = int(np.interp(x1, [110, 620], [0, w - 1]))
-                    Y = int(np.interp(y1, [20, 350], [0, h - 1]))
-                    cv2.circle(img, (lmList[8][1], lmList[8][2]), 7, (255, 255, 255), cv2.FILLED)
-                    cv2.circle(img, (lmList[4][1], lmList[4][2]), 10, (0, 255, 0), cv2.FILLED)  #thumb
+                    if fingers==[1,1,0,0,1]:
+                            x1, y1 = lmList[8][1], lmList[8][2]
+                            w, h = autopy.screen.size()
+                            X = int(np.interp(x1, [110, 620], [0, w - 1]))
+                            Y = int(np.interp(y1, [20, 350], [0, h - 1]))
+                            cv2.circle(img, (lmList[8][1], lmList[8][2]), 7, (255, 255, 255), cv2.FILLED)
+                            cv2.circle(img, (lmList[4][1], lmList[4][2]), 10, (0, 255, 0), cv2.FILLED)  #thumb
 
-                    if X%2 !=0:
-                        X = X - X%2
-                    if Y%2 !=0:
-                        Y = Y - Y%2
-                    print(X,Y)
-                    autopy.mouse.move(X,Y)
+                            if X%2 !=0:
+                                X = X - X%2
+                            if Y%2 !=0:
+                                Y = Y - Y%2
+                            print(X,Y)
+                            autopy.mouse.move(X,Y)
                 #  pyautogui.moveTo(X,Y)
-                    if fingers==[1,1,1,1,1]:
-                        cv2.circle(img, (lmList[4][1], lmList[4][2]), 10, (0, 0, 255), cv2.FILLED)  # thumb
-                        pyautogui.click()
+                    
+                    if fingers == [0,0,0,0,0]: #thumb excluded
+                        active = 0
+                        mode = 'N'
+                        print(mode)
+
+        if mode == 'click':
+                active = 1
+                if len(lmList) != 0:
+                    if (fingers==[1,0,0,0,0]) & clickMode==True:
+                                    print("click")
+                                    cv2.circle(img, (lmList[4][1], lmList[4][2]), 10, (0, 0, 255), cv2.FILLED)  # thumbm
+                                    pyautogui.click()  
+                                    clickMode=False
+                                
+                    if fingers == [0,0,0,0,0]: #thumb excluded
+                                    active = 0
+                                    mode = 'N'
+                                    print(mode)
+
+                    
 
        
         cTime = time.time()

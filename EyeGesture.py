@@ -11,10 +11,12 @@ def EyeCaptureMovement(cam,mp,pyautogui,cv2,last_click_time,face_mesh,screen_h,s
 
         #process the frame with the face mesh model to perform facial landmark detection on the input rgb_frame
         output = face_mesh.process(rgb_frame)
+        # print("output is ",output)
 
          
         #extracts the facial landmark points from the output variable
         landmark_points = output.multi_face_landmarks
+        print("output is ",landmark_points)
         frame_h, frame_w, _ = frame.shape
 
         if landmark_points:
