@@ -75,7 +75,7 @@ def HandTracker(cap,pTime,cTime,detector,active,mode):
             elif (fingers == [1 ,1 , 0, 0, 1]) & (active == 0 ):
                 mode = 'Cursor'
                 active = 1
-            elif(fingers==[1,0,0,0,0]) & (active==0):
+            elif (fingers==[1,0,0,0,0] or fingers==[0,0,0,0,1] or fingers==[1,1,1,1,1]) & (active==0):
                 mode='click'
                 active=1
 
@@ -185,9 +185,21 @@ def HandTracker(cap,pTime,cTime,detector,active,mode):
                 active = 1
                 if len(lmList) != 0:
                     if (fingers==[1,0,0,0,0]) & clickMode==True:
-                                    print("click")
+                                    print("left click")
                                     cv2.circle(img, (lmList[4][1], lmList[4][2]), 10, (0, 0, 255), cv2.FILLED)  # thumbm
                                     pyautogui.click()  
+                                    clickMode=False
+
+                    if (fingers==[0,0,0,0,1]) & clickMode==True:
+                                    print("right click")
+                                    cv2.circle(img, (lmList[4][1], lmList[4][2]), 10, (0, 0, 255), cv2.FILLED)  # thumbm
+                                    pyautogui.click(button='right')  
+                                    clickMode=False
+                    
+                    if (fingers==[1,1,1,1,1]) & clickMode==True:
+                                    print("double click")
+                                    cv2.circle(img, (lmList[4][1], lmList[4][2]), 10, (0, 0, 255), cv2.FILLED)  # thumbm
+                                    pyautogui.doubleClick()  
                                     clickMode=False
                                 
                     if fingers == [0,0,0,0,0]: #thumb excluded
@@ -196,7 +208,8 @@ def HandTracker(cap,pTime,cTime,detector,active,mode):
                                     print(mode)
 
                     
-
+        if mode=='dragAndDrop':
+             pass
        
         cTime = time.time()
         fps = 1/((cTime + 0.01)-pTime)
