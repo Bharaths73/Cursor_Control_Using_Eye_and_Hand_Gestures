@@ -28,6 +28,7 @@ color = (0,215,255)
 
 tipIds = [4, 8, 12, 16, 20]
 clickMode=True
+double_click_executed = False
 
 
 
@@ -36,6 +37,7 @@ pyautogui.FAILSAFE = False
 def HandTracker(cap,pTime,cTime,detector,active,mode):
       
         global clickMode
+        global double_click_executed
         success, img = cap.read()
         img = detector.findHands(img)
         lmList = detector.findPosition(img, draw=False)
@@ -190,23 +192,23 @@ def HandTracker(cap,pTime,cTime,detector,active,mode):
                                     pyautogui.click()  
                                     clickMode=False
 
-                    if (fingers==[0,0,0,0,1]) & clickMode==True:
+                    elif (fingers==[0,0,0,0,1]) & clickMode==True:
                                     print("right click")
                                     cv2.circle(img, (lmList[4][1], lmList[4][2]), 10, (0, 0, 255), cv2.FILLED)  # thumbm
                                     pyautogui.click(button='right')  
                                     clickMode=False
                     
-                    if (fingers==[1,1,1,1,1]) & clickMode==True:
+                    elif (fingers==[1,1,1,1,1]) & clickMode==True and not double_click_executed:
                                     print("double click")
                                     cv2.circle(img, (lmList[4][1], lmList[4][2]), 10, (0, 0, 255), cv2.FILLED)  # thumbm
                                     pyautogui.doubleClick()  
                                     clickMode=False
+
                                 
-                    if fingers == [0,0,0,0,0]: #thumb excluded
+                    elif fingers == [0,0,0,0,0]: #thumb excluded
                                     active = 0
                                     mode = 'N'
                                     print(mode)
-
                     
         if mode=='dragAndDrop':
              pass

@@ -8,6 +8,7 @@ import threading
 import cv2
 import sys
 
+
 try:
     cam = cv2.VideoCapture(0)
 
@@ -89,6 +90,10 @@ def exit_application():
 # Create the main window
 root = tk.Tk()
 root.title("Gesture Control Options")
+# try:
+#     print(root.tk.call('info', 'patchlevel'))
+# except Exception as e:
+#     print(e)
 
 
 # Variables to track the control modes

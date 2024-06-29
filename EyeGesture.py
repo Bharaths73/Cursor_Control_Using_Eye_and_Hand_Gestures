@@ -16,7 +16,7 @@ def EyeCaptureMovement(cam,mp,pyautogui,cv2,last_click_time,face_mesh,screen_h,s
          
         #extracts the facial landmark points from the output variable
         landmark_points = output.multi_face_landmarks
-        print("output is ",landmark_points)
+        # print("output is ",landmark_points)
         frame_h, frame_w, _ = frame.shape
 
         if landmark_points:
@@ -43,17 +43,17 @@ def EyeCaptureMovement(cam,mp,pyautogui,cv2,last_click_time,face_mesh,screen_h,s
                 cv2.circle(frame, (x, y), 3, (0, 255, 255)) 
 
             if (left[0].y - left[1].y) < 0.004:
-                print("0.04 inside")
+                # print("0.04 inside")
                 current_time = time.time()
                 time_since_last_click = current_time - last_click_time
 
                 if time_since_last_click < 0.5:  
                     pyautogui.doubleClick()
-                    print("double click")
+                    # print("double click")
              
                 else:
                     pyautogui.click()
-                    print("single click")
+                    # print("single click")
 
                 last_click_time = current_time 
 
